@@ -1,14 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const authRoutes = require("./routes/auth");
+
+const authRoutes = require("./src/infrastructure/http/routes/authRoutes");
+const { probarConexion } = require("./src/config/db");
 
 const app = express();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Rutas de autenticación (Arquitectura Hexagonal)
 app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
@@ -24,6 +28,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Backend ejecutándose en http://localhost:${PORT}`);
+  await probarConexion();
 });
